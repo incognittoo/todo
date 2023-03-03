@@ -9,7 +9,7 @@ class Home extends StatefulWidget {
 
 class _HomeState extends State<Home> {
   List todoList = [];
-  late String _userNote;
+  String _userNote = '';
 
   @override
   void initState() {
@@ -23,7 +23,7 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color.fromARGB(255, 3, 63, 204),
+        backgroundColor: Color.fromARGB(255, 1, 28, 91),
         title: Text('Список дел'),
         centerTitle: true,
       ),
@@ -42,7 +42,7 @@ class _HomeState extends State<Home> {
                   trailing: IconButton(
                     icon: Icon(
                       Icons.delete_sharp,
-                      color: Colors.deepOrange,
+                      color: Colors.red,
                     ),
                     onPressed: () {
                       setState(() {
@@ -60,7 +60,10 @@ class _HomeState extends State<Home> {
             );
           }),
       floatingActionButton: FloatingActionButton(
-        child: Icon(Icons.add_box),
+        child: Icon(
+          Icons.add_box,
+          color: Colors.white,
+        ),
         backgroundColor: Colors.green,
         onPressed: () {
           showDialog(
@@ -81,7 +84,10 @@ class _HomeState extends State<Home> {
                           });
                           Navigator.of(context).pop();
                         },
-                        child: Text('Сохранить'))
+                        child: Text(
+                          'Сохранить',
+                          style: TextStyle(color: Colors.white),
+                        ))
                   ],
                 );
               });

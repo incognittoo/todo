@@ -8,7 +8,7 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-  late String _noteText;
+  String _noteText = '';
 
   @override
   Widget build(BuildContext context) {
@@ -21,19 +21,25 @@ class _NoteScreenState extends State<NoteScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Column(
+            mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 'Заметка:',
                 style: TextStyle(fontWeight: FontWeight.bold),
               ),
               Padding(padding: EdgeInsets.only(bottom: 10)),
-              Text('$_noteText'),
+              Text(
+                '$_noteText',
+              ),
               Padding(padding: EdgeInsets.only(bottom: 20)),
               ElevatedButton(
                   onPressed: () {
                     Navigator.pop(context);
                   },
-                  child: Text('Назад'))
+                  child: Text(
+                    'Назад',
+                    style: TextStyle(color: Colors.white),
+                  ))
             ],
           )
         ],
