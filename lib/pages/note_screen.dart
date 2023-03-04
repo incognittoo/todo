@@ -8,7 +8,7 @@ class NoteScreen extends StatefulWidget {
 }
 
 class _NoteScreenState extends State<NoteScreen> {
-  String _noteText = '';
+  late String _noteText;
 
   @override
   Widget build(BuildContext context) {

@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 class Home extends StatefulWidget {
   const Home({super.key});
@@ -11,9 +13,15 @@ class _HomeState extends State<Home> {
   List todoList = [];
   String _userNote = '';
 
+  // void initFirebase() async {
+  //   WidgetsFlutterBinding.ensureInitialized();
+  //   await Firebase.initializeApp();
+  // }
+
   @override
   void initState() {
     super.initState();
+    // initFirebase();
 
     todoList.addAll(
         ['Записать курс', 'Выучить Flutter', 'Build ToDo List Application']);
@@ -27,38 +35,46 @@ class _HomeState extends State<Home> {
         title: Text('Список дел'),
         centerTitle: true,
       ),
-      body: ListView.builder(
-          itemCount: todoList.length,
-          itemBuilder: (BuildContext context, int index) {
-            return Dismissible(
-              key: Key(todoList[index]),
-              child: Card(
-                child: ListTile(
-                  title: Text(todoList[index]),
-                  onTap: () {
-                    Navigator.pushNamed(context, '/note',
-                        arguments: todoList[index]);
-                  },
-                  trailing: IconButton(
-                    icon: Icon(
-                      Icons.delete_sharp,
-                      color: Colors.red,
+      body: StreamBuilder(
+        stream: FirebaseFirestore.instance.collection('notes').snapshots(),
+        builder: (BuildContext context, AsyncSnapshot<QuerySnapshot> snapshot) {
+          if (!snapshot.hasData) return Text('Нет заметок');
+          return ListView.builder(
+              itemCount: snapshot.data?.docs.length,
+              itemBuilder: (BuildContext context, int index) {
+                return Dismissible(
+                  key: Key(snapshot.data!.docs[index].id),
+                  child: Card(
+                    child: ListTile(
+                      title: Text(snapshot.data?.docs[index].get('title')),
+                      onTap: () {
+                        Navigator.pushNamed(context, '/note',
+                            arguments: todoList[index]);
+                      },
+                      trailing: IconButton(
+                        icon: Icon(
+                          Icons.delete_sharp,
+                          color: Colors.red,
+                        ),
+                        onPressed: () {
+                          FirebaseFirestore.instance
+                              .collection('notes')
+                              .doc(snapshot.data?.docs[index].id)
+                              .delete();
+                        },
+                      ),
                     ),
-                    onPressed: () {
-                      setState(() {
-                        todoList.removeAt(index);
-                      });
-                    },
                   ),
-                ),
-              ),
-              onDismissed: (direction) {
-                setState(() {
-                  todoList.removeAt(index);
-                });
-              },
-            );
-          }),
+                  onDismissed: (direction) {
+                    FirebaseFirestore.instance
+                        .collection('notes')
+                        .doc(snapshot.data?.docs[index].id)
+                        .delete();
+                  },
+                );
+              });
+        },
+      ),
       floatingActionButton: FloatingActionButton(
         child: Icon(
           Icons.add_box,
@@ -79,9 +95,9 @@ class _HomeState extends State<Home> {
                   actions: [
                     ElevatedButton(
                         onPressed: () {
-                          setState(() {
-                            todoList.add(_userNote);
-                          });
+                          FirebaseFirestore.instance
+                              .collection('notes')
+                              .add({'title': _userNote});
                           Navigator.of(context).pop();
                         },
                         child: Text(
