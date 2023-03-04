@@ -46,10 +46,18 @@ class _HomeState extends State<Home> {
                   key: Key(snapshot.data!.docs[index].id),
                   child: Card(
                     child: ListTile(
-                      title: Text(snapshot.data?.docs[index].get('title')),
+                      title: Text(
+                        snapshot.data?.docs[index].get('title'),
+                        style: TextStyle(
+                            fontFamily: 'Tilt Neon',
+                            fontWeight: FontWeight.w500),
+                      ),
                       onTap: () {
-                        Navigator.pushNamed(context, '/note',
-                            arguments: todoList[index]);
+                        Navigator.pushNamed(
+                          context,
+                          '/note',
+                          arguments: snapshot.data?.docs[index].get('title'),
+                        );
                       },
                       trailing: IconButton(
                         icon: Icon(
